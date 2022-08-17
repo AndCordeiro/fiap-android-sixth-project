@@ -13,6 +13,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 
 class MainActivity : AppCompatActivity() {
 
+    // Lista de lugares/escolas
     private val places = arrayListOf(
         Place(
             "FIAP Campus Vila Olimpia",
@@ -38,24 +39,29 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // Infla o mapa
         val mapFragment =
             supportFragmentManager.findFragmentById(R.id.map_fragment) as SupportMapFragment
         mapFragment.getMapAsync { googleMap ->
+            // Adicona os markers
             addMarkers(googleMap)
 
+            // Load do mapa
             googleMap.setOnMapLoadedCallback {
                 val bounds = LatLngBounds.builder()
                 places.forEach {
                     bounds.include(it.latLng)
                 }
+                // foco da camera nos locais
                 googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), 100))
             }
         }
     }
 
+    // Função que implementa os markers
     private fun addMarkers(googleMap: GoogleMap) {
         places.forEach { place ->
-            val marker = googleMap.addMarker(
+            googleMap.addMarker(
                 MarkerOptions()
                     .title(place.name)
                     .snippet(place.address)
